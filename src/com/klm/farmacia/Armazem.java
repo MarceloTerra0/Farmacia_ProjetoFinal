@@ -1,6 +1,7 @@
-
 //Criar um produto novo na tabela produto
+
 package com.klm.farmacia;
+
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.util.Scanner;

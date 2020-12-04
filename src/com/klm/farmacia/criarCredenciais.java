@@ -1,5 +1,3 @@
-
-//Cadastrar cliente (nome + CPF + telefone)
 package com.klm.farmacia;
 
 import java.security.MessageDigest;

@@ -1,4 +1,7 @@
+//Cadastrar cliente (nome + CPF + telefone)
+
 package com.klm.farmacia;
+
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.Scanner;
