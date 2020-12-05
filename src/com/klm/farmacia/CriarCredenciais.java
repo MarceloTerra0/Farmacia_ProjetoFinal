@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class criarCredenciais {
+public class CriarCredenciais {
     public static String hashSenha(String password) throws NoSuchAlgorithmException {
         //Trecho de código retirado de:
         //https://github.com/VoxelPixel/HashingAlgorithmsInJava/blob/master/SHA512.java

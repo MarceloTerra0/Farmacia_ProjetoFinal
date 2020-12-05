@@ -25,7 +25,7 @@ public class Main{
             qtdProdutos.add(8);
             Connection connection = DriverManager.getConnection(SQLurl, SQLusername, SQLpassword);
             BigDecimal valorCompra = new BigDecimal("827.99");
-            Vendas.finalizarVenda(1, 1, 9, 1, valorCompra ,produtos, qtdProdutos, connection);
+            Vendas.finalizarVenda(1, 1, 10, 1, valorCompra ,produtos, qtdProdutos, connection);
 
             System.out.println("Connected to the database.");
             Armazem.consultaPrecoEEstoque("Buscopan", 1, connection);

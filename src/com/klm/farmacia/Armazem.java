@@ -45,13 +45,17 @@ public class Armazem {
                 ResultSet produto = statement.executeQuery();
                 if (produto.next()){
                     BigDecimal preco = produto.getBigDecimal("preco_fornecedor");
-                    System.out.println("Quantas unidades do produto '" + produto.getString("nome") + "' (R$" + produto.getBigDecimal("preco_fornecedor").toString() + ") devem ser compradas?");
+                    System.out.println("Quantas unidades do produto '" + produto.getString("nome") + "' (R$"
+                            + produto.getBigDecimal("preco_fornecedor").toString() + ") devem ser compradas?");
                     escolha = scanner.nextInt();
                     if (preco.multiply(BigDecimal.valueOf(escolha)).compareTo(dinheiroFarmaciaValor) < 0){
-                        System.out.println("Compra do produto realizada com sucesso! O valor gasto foi R$" + preco.multiply(BigDecimal.valueOf(escolha)).toString());
+                        System.out.println("Compra do produto realizada com sucesso! O valor gasto foi R$"
+                                + preco.multiply(BigDecimal.valueOf(escolha)).toString());
                         mensagem = "Compra do produto realizada com sucesso";
                     }else{
-                        System.out.println("Dinheiro insuficiente para a compra, o dinheiro que a farmacia possui é de R$" + dinheiroFarmaciaValor.toString() + ". E o dinheiro necessário é R$" + preco.multiply(BigDecimal.valueOf(escolha)));
+                        System.out.println("Dinheiro insuficiente para a compra, o dinheiro que a farmacia possui é de R$"
+                                + dinheiroFarmaciaValor.toString() + ". E o dinheiro necessário é R$"
+                                + preco.multiply(BigDecimal.valueOf(escolha)));
                         mensagem = "Dinheiro insuficiente para a compra";
                     }
                 }else{
@@ -67,7 +71,8 @@ public class Armazem {
         }
     }
 
-    public static String retiraItemArmazem(int idFarmacia, int idProduto, int quantidadeRemover, Connection connection) throws SQLException {
+    public static String retiraItemArmazem(int idFarmacia
+            ,int idProduto, int quantidadeRemover, Connection connection) throws SQLException {
         String sql = "SELECT qtd_produto FROM armazem WHERE id_farmacia = ? AND id_produto = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setInt(1, idFarmacia);
@@ -85,5 +90,29 @@ public class Armazem {
         }
         statement.close();
         return("Teste");
+    }
+    public static String cadastrarNovoProduto(int idCargo, Connection connection) throws SQLException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Digite o nome do produto");
+        String nomeProduto = scanner.nextLine();
+        System.out.println("Digite o nome do produto");
+        BigDecimal precoFinal = scanner.nextBigDecimal();
+        System.out.println("Digite o nome do produto");
+        BigDecimal precoFornecedor = scanner.nextBigDecimal();
+
+        String sql = "INSERT INTO produto (nome, preco, preco_fornecedor) VALUES (?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, nomeProduto);
+        statement.setBigDecimal(2, precoFinal);
+        statement.setBigDecimal(3, precoFornecedor);
+        int rows = statement.executeUpdate();
+        if (rows>0){
+            System.out.println("Com sucesso");
+        }else{
+            System.out.println("Falha");
+        }
+
+
+        return("");
     }
 }

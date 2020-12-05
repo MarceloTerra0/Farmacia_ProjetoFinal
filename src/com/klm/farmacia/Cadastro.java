@@ -1,5 +1,3 @@
-//Cadastrar cliente (nome + CPF + telefone)
-
 package com.klm.farmacia;
 
 import java.security.NoSuchAlgorithmException;
@@ -33,8 +31,8 @@ public class Cadastro {
         System.out.println("Digite o salário do funcionário");
         BigDecimal salario = scanner.nextBigDecimal();
         System.out.println("--Tela do funcionário--");
-        String username = criarCredenciais.criarUsername(connection);
-        String senha = criarCredenciais.criarSenha();
+        String username = CriarCredenciais.criarUsername(connection);
+        String senha = CriarCredenciais.criarSenha();
 
         String sql = "INSERT INTO funcionario (nome, salario, login, senha, id_farmacia, comissao, cargo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -60,11 +58,13 @@ public class Cadastro {
         String nome = scanner.nextLine();
         System.out.println("Digite o telefone de contato do cliente");
         String telefone = scanner.nextLine();
+        System.out.println("Digite o CPF do cliente");
+        String CPF = scanner.nextLine();
         String sql = "INSERT INTO cliente (nome, telefone, quantidade_compras) VALUES (?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, nome);
         statement.setString(2, telefone);
-        statement.setInt(3, 0);
+        statement.setString(3, CPF);
         int rows = statement.executeUpdate();
         if (rows>0){
             System.out.println("Cliente cadastrado com sucesso!");
