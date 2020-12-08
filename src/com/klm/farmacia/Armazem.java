@@ -1,6 +1,6 @@
-//Criar um produto novo na tabela produto
-
 package com.klm.farmacia;
+
+import com.klm.farmacia.obj.Produto;
 
 import java.sql.*;
 import java.sql.PreparedStatement;
@@ -9,25 +9,24 @@ import java.math.BigDecimal;
 
 public class Armazem {
     public static String consultaPrecoEEstoque(String nomeProduto, int idFarmacia, Connection connection) throws SQLException {
-        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto FROM armazem JOIN produto WHERE produto.nome LIKE ? AND id_farmacia = ?";
+        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto FROM" +
+                " armazem JOIN produto WHERE produto.nome LIKE ? AND id_farmacia = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, nomeProduto);
         statement.setInt(2, idFarmacia);
         ResultSet produto = statement.executeQuery();
         if(produto.next()){
-            if(produto.getInt("qtd_produto") <=0){
-                System.out.println("O produto não está em estoque");
-            }else{
-                System.out.println("Produto: '" + produto.getString("nome") +
-                        "'\nPreço: RS" + produto.getBigDecimal("preco") +
-                        "\nQuantidade no estoque: " + produto.getInt("qtd_produto"));
-            }
+            System.out.println("Produto: '" + produto.getString("nome") +
+                    "'\nPreço: RS" + produto.getBigDecimal("preco") +
+                    "\nQuantidade no estoque: " + produto.getInt("qtd_produto"));
+        }else{
+            System.out.println("Produto inexistente");
         }
         return("");
     }
 
     public static String compraEstoque(int idCargo, int idFarmacia, Connection connection) throws SQLException {
-        if (idCargo == 1){
+        if (idCargo != 1){
             String mensagem;
             String sql = "SELECT dinheiro FROM farmacias WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -91,13 +90,14 @@ public class Armazem {
         statement.close();
         return("Teste");
     }
+
     public static String cadastrarNovoProduto(int idCargo, Connection connection) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Digite o nome do produto");
         String nomeProduto = scanner.nextLine();
-        System.out.println("Digite o nome do produto");
+        System.out.println("Digite o preço final produto");
         BigDecimal precoFinal = scanner.nextBigDecimal();
-        System.out.println("Digite o nome do produto");
+        System.out.println("Digite o preço do fornecedor do produto");
         BigDecimal precoFornecedor = scanner.nextBigDecimal();
 
         String sql = "INSERT INTO produto (nome, preco, preco_fornecedor) VALUES (?, ?, ?)";
@@ -112,7 +112,40 @@ public class Armazem {
             System.out.println("Falha");
         }
 
-
+        statement.close();
         return("");
     }
+
+    public static Produto checaProdutoPeloNome(String nomeProduto, int idFarmacia,  Connection connection) throws SQLException {
+        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto, produto.id FROM" +
+                " armazem JOIN produto WHERE produto.nome LIKE ? AND id_farmacia = ?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, nomeProduto);
+        statement.setInt(2, idFarmacia);
+        ResultSet produto = statement.executeQuery();
+        if(produto.next()){
+            return (new Produto(produto.getString("nome"), produto.getInt("id_farmacia"),
+                    produto.getInt("qtd_produto"), produto.getBigDecimal("preco"), produto.getInt("id")));
+        }
+        else{
+            return (new Produto("", 0, -1, new BigDecimal("0"), 0));
+        }
+
+    }
+
+    public static int checaProdutoPeloID(int idProduto, int idFarmacia,  Connection connection) throws SQLException {
+        String sql = "SELECT armazem.qtd_produto FROM armazem JOIN produto WHERE produto.id_produto = ? AND id_farmacia = ?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, idProduto);
+        statement.setInt(2, idFarmacia);
+        ResultSet produto = statement.executeQuery();
+        if(produto.next()){
+            return (produto.getInt("qtd_produto"));
+        }
+        else{
+            return 0;
+        }
+
+    }
+
 }

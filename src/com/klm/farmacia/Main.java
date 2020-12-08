@@ -2,44 +2,48 @@
 
 package com.klm.farmacia;
 
+import com.klm.farmacia.obj.Funcionario;
+import com.klm.farmacia.obj.HistoricoVendas;
+import javax.swing.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Date;
 import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
 
 public class Main{
-
     public static void main(String[] args){
         String SQLurl = "jdbc:mysql://localhost:3306/farmacia";
         String SQLusername = "root";
         String SQLpassword = "https://www.youtube.com/watch?v=PkiIPzG37vQ";
         try{
-            List<Integer> produtos = new ArrayList<Integer>();
+
+            /*
+            DEBUG
+
+            List<Integer> produtos = new ArrayList<>();
             produtos.add(1);
             produtos.add(2);
-            List<Integer> qtdProdutos = new ArrayList<Integer>();
+            List<Integer> qtdProdutos = new ArrayList<>();
             qtdProdutos.add(5);
             qtdProdutos.add(8);
+            BigDecimal valorCompra = new BigDecimal("800.00");
+            */
+
             Connection connection = DriverManager.getConnection(SQLurl, SQLusername, SQLpassword);
-            BigDecimal valorCompra = new BigDecimal("827.99");
-            Vendas.finalizarVenda(1, 1, 10, 1, valorCompra ,produtos, qtdProdutos, connection);
-
             System.out.println("Connected to the database.");
-            Armazem.consultaPrecoEEstoque("Buscopan", 1, connection);
+
+            Login telaLogin = new Login(connection);
+            telaLogin.initialize();
+
             Scanner scanner = new Scanner(System.in);
-            System.out.println("1 - Criar conta\n2 - Acessar conta->");
-            int escolha = scanner.nextInt();
+            scanner.nextLine();
 
-            if(escolha == 1){
-                Cadastro.cadastrarCliente(connection);
-                Cadastro.cadastrarFuncionario(3, connection);
-            }
-
-            connection.close();
-        } catch(SQLException | NoSuchAlgorithmException e){
+        } catch(SQLException e){
             System.out.println("Could not connect to the server.");
             e.printStackTrace();
         }

@@ -48,7 +48,7 @@ public class Vendas {
             System.out.println("Erro ao finalizar a venda");
         }
 
-        String vendaHistoricoVendas = "INSERT INTO historico_vendas (id, id_farmacia, id_funcionario, id_cliente, data, valor_total, valor_desconto_aplicado) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String vendaHistoricoVendas = "INSERT INTO historico_vendas (id, id_farmacia, id_funcionario, id_cliente, dataVenda, valor_total, valor_desconto_aplicado) VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement1 = connection.prepareStatement(vendaHistoricoVendas);
         statement1.setInt(1, idVenda);
         statement1.setInt(2, idFarmacia);
@@ -56,7 +56,7 @@ public class Vendas {
         statement1.setInt(4, idCliente);
 
         java.util.Date dt = new java.util.Date();
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String currentTime = sdf.format(dt);
         statement1.setString(5, currentTime);
 
@@ -67,11 +67,13 @@ public class Vendas {
         SQLClienteCompras.setInt(1, idCliente);
         ResultSet clienteCompras = SQLClienteCompras.executeQuery();
         BigDecimal desconto = new BigDecimal("1");
+        int comprasCliente=0;
         if(clienteCompras.next()) {
+            comprasCliente = clienteCompras.getInt("quantidade_compras");
             System.out.println(clienteCompras.getInt("quantidade_compras"));
-            if (clienteCompras.getInt("quantidade_compras") >= 20) {
+            if (comprasCliente >= 20) {
                 desconto = new BigDecimal("0.90");
-            } else if (clienteCompras.getInt("quantidade_compras") >= 10) {
+            } else if (comprasCliente >= 10) {
                 desconto = new BigDecimal("0.95");
             }
         }
@@ -82,7 +84,19 @@ public class Vendas {
         if (rows1>0){
             System.out.println("foi");
         }
+        String sql2 = "UPDATE cliente SET quantidade_compras = ? WHERE id = ?";
+        PreparedStatement statement2 = connection.prepareStatement(sql2);
+        statement2.setInt(1, comprasCliente+1);
+        statement2.setInt(2, idCliente);
+        int rows2 = statement2.executeUpdate();
+        if (rows2>0){
+            System.out.println("aaa");
+        }else{
+            System.out.println("bbb");
+        }
 
+        statement.close();
+        statement1.close();
         return ("");
     }
 

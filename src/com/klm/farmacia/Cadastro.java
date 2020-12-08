@@ -52,25 +52,18 @@ public class Cadastro {
         return ("Usuário cadastrado com sucesso");
     }
 
-    public static String cadastrarCliente(Connection connection) throws SQLException{
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Digite o nome do Cliente");
-        String nome = scanner.nextLine();
-        System.out.println("Digite o telefone de contato do cliente");
-        String telefone = scanner.nextLine();
-        System.out.println("Digite o CPF do cliente");
-        String CPF = scanner.nextLine();
-        String sql = "INSERT INTO cliente (nome, telefone, quantidade_compras) VALUES (?, ?, ?)";
+    public static String cadastrarCliente(String nome,String telefone, String CPF, Connection connection) throws SQLException{
+        String sql = "INSERT INTO cliente (nome, telefone, quantidade_compras, cpf) VALUES (?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, nome);
         statement.setString(2, telefone);
-        statement.setString(3, CPF);
+        statement.setInt(3, 0);
+        statement.setString(4, CPF);
         int rows = statement.executeUpdate();
-        if (rows>0){
-            System.out.println("Cliente cadastrado com sucesso!");
-        }
         statement.close();
-        return ("Usuário cadastrado com sucesso");
-
+        if (rows>0){
+            return("Cliente cadastrado com sucesso!");
+        }
+        return ("Erro ao cadastrar o cliente");
     }
 }
