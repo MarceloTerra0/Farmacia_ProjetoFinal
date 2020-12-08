@@ -117,8 +117,10 @@ public class Armazem {
     }
 
     public static Produto checaProdutoPeloNome(String nomeProduto, int idFarmacia,  Connection connection) throws SQLException {
-        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto, produto.id FROM" +
-                " armazem JOIN produto WHERE produto.nome LIKE ? AND id_farmacia = ?";
+        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto, produto.id" +
+                " FROM farmacia.armazem" +
+                " INNER JOIN farmacia.produto ON armazem.id_produto = produto.id" +
+                " WHERE produto.nome LIKE ? AND id_farmacia = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, nomeProduto);
         statement.setInt(2, idFarmacia);
@@ -130,20 +132,23 @@ public class Armazem {
         else{
             return (new Produto("", 0, -1, new BigDecimal("0"), 0));
         }
-
     }
 
-    public static int checaProdutoPeloID(int idProduto, int idFarmacia,  Connection connection) throws SQLException {
-        String sql = "SELECT armazem.qtd_produto FROM armazem JOIN produto WHERE produto.id_produto = ? AND id_farmacia = ?";
+    public static Produto checaProdutoPeloID(int idProduto, int idFarmacia,  Connection connection) throws SQLException {
+        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto, produto.id" +
+                " FROM farmacia.armazem" +
+                " INNER JOIN farmacia.produto ON armazem.id_produto = produto.id" +
+                " WHERE produto.id = ? AND id_farmacia = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setInt(1, idProduto);
         statement.setInt(2, idFarmacia);
         ResultSet produto = statement.executeQuery();
         if(produto.next()){
-            return (produto.getInt("qtd_produto"));
+            return (new Produto(produto.getString("nome"), produto.getInt("id_farmacia"),
+                    produto.getInt("qtd_produto"), produto.getBigDecimal("preco"), produto.getInt("id")));
         }
         else{
-            return 0;
+            return (new Produto("", 0, -1, new BigDecimal("0"), 0));
         }
 
     }

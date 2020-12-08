@@ -13,11 +13,6 @@ import javax.swing.*;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
-    //NÃO EXISTE LINHA 274!!!!!!!!!
-//*Linha 274-276 (pra finalizar janelas em vez de só esconde-las)
-
-//*/
-
 /**
  *
  * @author luc_p

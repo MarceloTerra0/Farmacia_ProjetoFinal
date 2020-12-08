@@ -1,25 +1,21 @@
-//CRIAR OBJETO PARA RETORNAR HISTORICO DE VENDAS!
 //+1 nas compras do cliente
+//Adicionar dinheiro na farmacia
+//Adicionar comissao ao funcionario que vendeu
+//Retirar item Armazem
 
 package com.klm.farmacia;
+
+import com.klm.farmacia.obj.Produto;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.List;
 public class Vendas {
 
-    //Essa função irá lidar do processo inteiro de venda, desde
-    //a seleção de itens para a venda até a venda do produto.
-
     public static String finalizarVenda(int idFuncionario, int idCliente, int idVenda, int idFarmacia
-            ,BigDecimal valorCompraTotal, List listaProdutos, List quantidadeProdutos
-            ,Connection connection) throws SQLException {
+            , BigDecimal valorCompraTotal, List<Produto> listaProdutos , List<Integer> qtdProdutoVendido, Connection connection) throws SQLException {
 
-        //Por mais que tal checagem seja redundante (ao menos deveria ser), estou deixando-a por propósitos de debug.
-        if(listaProdutos.size() != quantidadeProdutos.size()){
-            return ("Erro desconhecido ao finalizar a venda");
-        }
-
+    //Trecho cuidando da tabela de vendas
         String vendaProduto = "INSERT INTO venda (id_venda, id_produto_vendido, qtd_produto_vendido) VALUES ";
 
         for(int i=0; i < listaProdutos.size(); i++) {
@@ -34,20 +30,17 @@ public class Vendas {
         PreparedStatement statement = connection.prepareStatement(vendaProduto);
         for(int i=0; i < listaProdutos.size(); i++) {
             statement.setInt(i*3+1, idVenda);
-            statement.setInt(i*3+2, (Integer) listaProdutos.get(i));
-            statement.setInt(i*3+3, (Integer) quantidadeProdutos.get(i));
+            statement.setInt(i*3+2, listaProdutos.get(i).getIdProduto());
+            statement.setInt(i*3+3, qtdProdutoVendido.get(i));
         }
         int rows = statement.executeUpdate();
+
         if (rows>0){
-            if (rows != listaProdutos.size()) {
-                System.out.println("Compra realizada com sucesso, porém erro ao inserir no banco de dados");
-            }else{
-                System.out.println("Compra realizada com sucesso");
-            }
+            System.out.println("Compra realizada com sucesso");
         }else{
             System.out.println("Erro ao finalizar a venda");
         }
-
+    //Trecho cuidando da tabela historico_vendas
         String vendaHistoricoVendas = "INSERT INTO historico_vendas (id, id_farmacia, id_funcionario, id_cliente, dataVenda, valor_total, valor_desconto_aplicado) VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement1 = connection.prepareStatement(vendaHistoricoVendas);
         statement1.setInt(1, idVenda);

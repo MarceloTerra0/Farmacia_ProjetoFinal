@@ -34,4 +34,6 @@ public class Produto {
     public int getIdProduto() {
         return idProduto;
     }
+
+    public BigDecimal getPrecoProdutoMultiplicado(BigDecimal multiplicador){return precoProduto.multiply(multiplicador);}
 }
