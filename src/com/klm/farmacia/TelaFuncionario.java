@@ -762,30 +762,43 @@ public class TelaFuncionario extends javax.swing.JPanel {
 
     //Isso executa quando clicam em "Adicionar" em Busca
     private void JBaddToCartActionPerformed(java.awt.event.ActionEvent evt) {
+        boolean existeNoCarrinho = false;
         String qtdProdutoStr = JTFitemQuantity.getText();
         try {
             int qtdProduto = Integer.parseInt(qtdProdutoStr);
             if (qtdProduto <= produto.getQtdEstoque() && qtdProduto>0) {
                 if (produtoSelecionado) {
-                    listaProdutosCarrinho.add(produto);
-                    carrinho = carrinho +
-                            produto.getIdProduto() + ") " +
-                            produto.getNomeProduto() + " " +
-                            qtdProduto + "x " +
-                            "R$" + produto.getPrecoProduto().toString() + " " +
-                            "R$" + produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)).toString() + "\n";
+                    //Ineficiente, porém funcional
+                    for (int i = 0; i < listaProdutosCarrinho.size(); i++) {
+                        if (listaProdutosCarrinho.get(i).getIdProduto() == produto.getIdProduto()) {
+                            existeNoCarrinho = true;
+                            break;
+                        }
+                    }
+                    if (!existeNoCarrinho) {
+                        listaProdutosCarrinho.add(produto);
+                        carrinho = carrinho +
+                                produto.getIdProduto() + ") " +
+                                produto.getNomeProduto() + " " +
+                                qtdProduto + "x " +
+                                "R$" + produto.getPrecoProduto().toString() + " " +
+                                "R$" + produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)).toString() + "\n";
 
-                    quantidadeProdutosCarrinho.add(qtdProduto);
-                    valorTotal = valorTotal.add(produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)));
+                        quantidadeProdutosCarrinho.add(qtdProduto);
+                        valorTotal = valorTotal.add(produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)));
 
-                    JTAcart.setText(carrinho);
-                    JTFstock.setText("");
-                    JTFitemName.setText("");
-                    JTFitemPrice.setText("");
-                    JTFitemCode.setText("");
-                    JTFitemQuantity.setText("");
-                    produtoSelecionado = false;
+                        JTAcart.setText(carrinho);
+                        JTFstock.setText("");
+                        JTFitemName.setText("");
+                        JTFitemPrice.setText("");
+                        JTFitemCode.setText("");
+                        JTFitemQuantity.setText("");
+                        produtoSelecionado = false;
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Produto já existe no carrinho");
+                    }
                 }
+
             }else if(qtdProduto<=0){
                 JOptionPane.showMessageDialog(null, "Insira a quantidade de produtos a serem comprados");
             }else{
