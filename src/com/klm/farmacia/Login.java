@@ -6,12 +6,16 @@
 package com.klm.farmacia;
     
 import com.klm.farmacia.obj.Funcionario;
+import com.klm.farmacia.obj.Produto;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -171,7 +175,12 @@ public class Login extends javax.swing.JPanel {
             JComponent comp = (JComponent) evt.getSource();
             Window win = SwingUtilities.getWindowAncestor(comp);
             win.dispose();
-            Employee telaFuncionario = new Employee(connection, funcionario);
+            BigDecimal valorTotal = new BigDecimal("0"), valorTotalDescontado = new BigDecimal("0");
+            List<Produto> listaProdutosCarrinho = new ArrayList<Produto>();
+            List<Integer> quantidadeProdutosCarrinho = new ArrayList<Integer>();
+            String carrinho = "";
+            Employee telaFuncionario = new Employee(connection, funcionario, valorTotal
+                    ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho);
             telaFuncionario.initialize();
         }
 

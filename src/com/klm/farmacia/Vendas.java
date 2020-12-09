@@ -12,8 +12,20 @@ import java.sql.*;
 import java.util.List;
 public class Vendas {
 
-    public static String finalizarVenda(int idFuncionario, int idCliente, int idVenda, int idFarmacia
-            , BigDecimal valorCompraTotal, List<Produto> listaProdutos , List<Integer> qtdProdutoVendido, Connection connection) throws SQLException {
+    public static String finalizarVenda(int idFuncionario, int idCliente, int idFarmacia, int comprasCliente
+            , BigDecimal valorCompraTotal, BigDecimal valorCompraDesconto,
+                                        List<Produto> listaProdutos, List<Integer> qtdProdutoVendido, Connection connection) throws SQLException {
+
+        int idVenda;
+    String sql = "SELECT id FROM historico_vendas ORDER BY id DESC LIMIT 1";
+    PreparedStatement statement0 = connection.prepareStatement(sql);
+    ResultSet resultSet0 = statement0.executeQuery();
+    if(resultSet0.next()) {
+        idVenda = resultSet0.getInt("id") + 1;
+    }else{
+        idVenda = 1;
+    }
+
 
     //Trecho cuidando da tabela de vendas
         String vendaProduto = "INSERT INTO venda (id_venda, id_produto_vendido, qtd_produto_vendido) VALUES ";
@@ -52,27 +64,8 @@ public class Vendas {
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String currentTime = sdf.format(dt);
         statement1.setString(5, currentTime);
-
         statement1.setBigDecimal(6, valorCompraTotal);
-        BigDecimal valorDescontoAplicado;
-        String SQLCliente = "SELECT quantidade_compras FROM cliente WHERE id = ?";
-        PreparedStatement SQLClienteCompras = connection.prepareStatement(SQLCliente);
-        SQLClienteCompras.setInt(1, idCliente);
-        ResultSet clienteCompras = SQLClienteCompras.executeQuery();
-        BigDecimal desconto = new BigDecimal("1");
-        int comprasCliente=0;
-        if(clienteCompras.next()) {
-            comprasCliente = clienteCompras.getInt("quantidade_compras");
-            System.out.println(clienteCompras.getInt("quantidade_compras"));
-            if (comprasCliente >= 20) {
-                desconto = new BigDecimal("0.90");
-            } else if (comprasCliente >= 10) {
-                desconto = new BigDecimal("0.95");
-            }
-        }
-
-        valorDescontoAplicado = valorCompraTotal.multiply(desconto);
-        statement1.setBigDecimal(7, valorDescontoAplicado);
+        statement1.setBigDecimal(7, valorCompraDesconto);
         int rows1 = statement1.executeUpdate();
         if (rows1>0){
             System.out.println("foi");
@@ -83,9 +76,9 @@ public class Vendas {
         statement2.setInt(2, idCliente);
         int rows2 = statement2.executeUpdate();
         if (rows2>0){
-            System.out.println("aaa");
+            System.out.println("update ++ qtd_compra cliente");
         }else{
-            System.out.println("bbb");
+            System.out.println("ERRO AO: update ++ qtd_compra cliente");
         }
 
         statement.close();

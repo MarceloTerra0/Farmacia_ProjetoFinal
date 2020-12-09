@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class Logar {
     public static Funcionario login(String username, String senha, Connection connection) throws SQLException, NoSuchAlgorithmException {
         String sql = "SELECT funcionario.login, funcionario.senha, funcionario.nome, farmacias.nome_farmacia," +
-                " funcionario.id_farmacia, funcionario.cargo FROM farmacia.funcionario INNER JOIN farmacia.farmacias" +
+                " funcionario.id_farmacia, funcionario.cargo, funcionario.id FROM farmacia.funcionario INNER JOIN farmacia.farmacias" +
                 " ON funcionario.id_farmacia=farmacias.id_farmacia WHERE funcionario.login = ? AND funcionario.senha = ?;";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, username);
@@ -21,9 +21,9 @@ public class Logar {
         if (logado.next()){
             //Criar nova query pra pegar nome da farmacia de onde ele trabalha
             return new Funcionario(logado.getString("nome"), logado.getString("nome_farmacia"),
-                    logado.getInt("id_farmacia"), logado.getInt("cargo"));
+                    logado.getInt("id_farmacia"), logado.getInt("cargo"), logado.getInt("id"));
         }else{
-            return new Funcionario("Erro", "Erro", 0, -1);
+            return new Funcionario("Erro", "Erro", 0, -1, -1);
         }
     }
 

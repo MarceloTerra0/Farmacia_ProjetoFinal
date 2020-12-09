@@ -23,19 +23,27 @@ package com.klm.farmacia;
 public class Employee extends javax.swing.JPanel {
     
     private String itemName,itemCodeStr,id,name, carrinho = "", telefone;
-    //carrinho = "";
     private Funcionario funcionario;
     boolean produtoSelecionado;
+    Produto produto;
+    Cliente cliente;
+
+    //String Carrinho
+    BigDecimal valorTotal = new BigDecimal("0"), valorTotalDescontado = new BigDecimal("0");
     List<Produto> listaProdutosCarrinho = new ArrayList<Produto>();
     List<Integer> quantidadeProdutosCarrinho = new ArrayList<Integer>();
-    Produto produto;
-    BigDecimal valorTotal = new BigDecimal("800"), valorTotalDescontado = new BigDecimal("720");
 
     
     /**
      * Creates new form Employee
      */
-    public Employee(Connection SQLconnection, Funcionario funcio) {
+    public Employee(Connection SQLconnection, Funcionario funcio, BigDecimal valorTota
+            ,BigDecimal valorTotaDescontado, List<Produto> listaProdutosCarrinh, List<Integer> quantidadeProdutosCarrinh, String carrinh) {
+        carrinho = carrinh;
+        valorTotalDescontado = valorTotaDescontado;
+        valorTotal = valorTota;
+        listaProdutosCarrinho = listaProdutosCarrinh;
+        quantidadeProdutosCarrinho = quantidadeProdutosCarrinh;
         connection = SQLconnection;
         funcionario = funcio;
         initComponents();
@@ -140,7 +148,7 @@ public class Employee extends javax.swing.JPanel {
 
         JTFcellphone1.setEditable(false);
 
-        JLclientId1.setText("ID");
+        JLclientId1.setText("ID Cliente");
 
         JTFclientId1.setEditable(false);
 
@@ -236,7 +244,11 @@ public class Employee extends javax.swing.JPanel {
         JBsell.setText("Finalizar");
         JBsell.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JBsellActionPerformed(evt);
+                try {
+                    JBsellActionPerformed(evt);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
 
@@ -777,7 +789,10 @@ public class Employee extends javax.swing.JPanel {
                             "R$" + produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)).toString() + "\n";
                     quantidadeProdutosCarrinho.add(qtdProduto);
                     System.out.println(carrinho);
+                    System.out.println("antes " + valorTotal.toString());
+
                     valorTotal = valorTotal.add(produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)));
+                    System.out.println("depois " + valorTotal.toString());
                     JTAcart.setText(carrinho);
                     JTFstock.setText("");
                     JTFitemName.setText("");
@@ -838,33 +853,44 @@ public class Employee extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_JBremoveActionPerformed
 
+    //Cria janela para finalizar venda
     private void JBfinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBfinishActionPerformed
         // TODO add your handling code here:
         //criando a janela para a finalização da compra
         JFrame jframe2 = new JFrame("App2");
-        jframe2.setContentPane(new Employee(connection, funcionario).JPclient);
+        jframe2.setContentPane(new Employee(connection, funcionario, valorTotal
+                ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho).JPclient);
         jframe2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe2.pack();
         jframe2.setVisible(true);
 
     }//GEN-LAST:event_JBfinishActionPerformed
 
+    //Quando se insere o CPF na janela de finalização de compra
     private void JTFclientIdFocusLost(java.awt.event.FocusEvent evt) throws SQLException {//GEN-FIRST:event_JTFclientIdFocusLost
         // TODO add your handling code here:
         JTFcurrentPrice.setText(valorTotalDescontado.toString());
         JTFtotalPrice.setText(valorTotal.toString());
         String cpf = JTFclientId.getText();
-        Cliente cliente = geraCliente.criaObjetoCliente(cpf, connection);
+        cliente = geraCliente.criaObjetoCliente(cpf, connection);
         if(cliente.getIdCliente()!=-1){
             JTFcellphone1.setText(cliente.getTelefoneCliente());
             JTFclientName1.setText(cliente.getNomeCliente());
-            JTFclientID.setText(Integer.toString(cliente.getIdCliente()));
-            JTFcurrentPrice.setText(valorTotal.multiply(geraCliente.calculaDesconto(cliente)).toString());
+            JTFclientId1.setText(Integer.toString(cliente.getIdCliente()));
+
+            //Essa parte abaixo idealmente já estaria inserida no momento da criação da janela
+            //Porém ainda não está. Resolver.
+            JTFtotalPrice.setText(valorTotal.toString());
+            JTFcurrentPrice.setText(valorTotal.multiply(geraCliente.calculaDesconto(cliente)).setScale(2, BigDecimal.ROUND_UP).toString());
+            valorTotalDescontado = valorTotal.multiply(geraCliente.calculaDesconto(cliente)).setScale(2, BigDecimal.ROUND_UP);
+            JTAcart1.setText(carrinho);
         }else{
             JOptionPane.showMessageDialog(null, "Cadastre o cliente antes de prosseguir com a compra");
         }
     }//GEN-LAST:event_JTFclientIdFocusLost
 
+
+    //os 2 botoes back & forth-----------
     private void JBback1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBback1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_JBback1ActionPerformed
@@ -872,18 +898,26 @@ public class Employee extends javax.swing.JPanel {
     private void JBforward1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBforward1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_JBforward1ActionPerformed
+    //Ajuda do kabal para fechar a janela
+    //os 2 botoes back & forth-----------
+
 
     private void JBcancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBcancelActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_JBcancelActionPerformed
+    //Ajuda do kabal para fechar a janela
 
-    private void JBsellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBsellActionPerformed
+    private void JBsellActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_JBsellActionPerformed
         // TODO add your handling code here:
+        System.out.println("yep");
+        Vendas.finalizarVenda(funcionario.getIdFuncionario(), cliente.getIdCliente(), funcionario.getIdFarmacia()
+        , cliente.getQuantidadeCompras(), valorTotal, valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, connection);
     }//GEN-LAST:event_JBsellActionPerformed
 
     public void initialize(){
         JFrame tela = new JFrame("App");
-        tela.setContentPane(new Employee(connection, funcionario).JPemployee);
+        tela.setContentPane(new Employee(connection, funcionario, valorTotal
+                ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho).JPemployee);
         //window.dispose
         tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tela.pack();
