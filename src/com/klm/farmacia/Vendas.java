@@ -18,6 +18,7 @@ public class Vendas {
                                         List<Produto> listaProdutos, List<Integer> qtdProdutoVendido, Connection connection) throws SQLException {
 
         int idVenda;
+        BigDecimal comissao;
     String sql = "SELECT id FROM historico_vendas ORDER BY id DESC LIMIT 1";
     PreparedStatement statement0 = connection.prepareStatement(sql);
     ResultSet resultSet0 = statement0.executeQuery();
@@ -85,7 +86,26 @@ public class Vendas {
         }
 
         //Comissão funcionario
-        String sql3 = "UPDATE funcionario SET comissao = ? WHERE id = ?";
+        String sql3 = "SELECT comissao FROM funcionario WHERE id = ?";
+        PreparedStatement preparedStatement3 = connection.prepareStatement(sql3);
+        preparedStatement3.setInt(1, idFuncionario);
+        ResultSet resultSet3 = preparedStatement3.executeQuery();
+        if(resultSet3.next()) {
+            comissao = resultSet3.getBigDecimal("comissao");
+        }else{
+            comissao = new BigDecimal("0");
+            System.out.println("erro ao checar comissao (como ?) ");
+        }
+        String sql4 = "UPDATE funcionario SET comissao = ? WHERE id = ?";
+        PreparedStatement preparedStatement4 = connection.prepareStatement(sql4);
+        preparedStatement4.setBigDecimal(1, comissao.add(valorCompraTotal.multiply(new BigDecimal("0.01"))));
+        preparedStatement4.setInt(2, idFuncionario);
+        int rows4 = preparedStatement4.executeUpdate();
+        if (rows4>0){
+            System.out.println("sucesso ao adicionar comissao");
+        }else{
+            System.out.println("falha ao adicionar comissao");
+        }
         statement.close();
         statement1.close();
         return ("");
