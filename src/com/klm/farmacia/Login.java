@@ -157,8 +157,7 @@ public class Login extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public void JBtryLoginActionPerformed(ActionEvent evt) throws SQLException, NoSuchAlgorithmException {//GEN-FIRST:event_JBtryLoginActionPerformed
-        // TODO add your handling code here:
+    public void JBtryLoginActionPerformed(ActionEvent evt) throws SQLException, NoSuchAlgorithmException {
         String userLogin = JTFusername.getText();
         String passwordLogin = new String(JPFpassword.getPassword()).trim();
 
@@ -184,12 +183,11 @@ public class Login extends javax.swing.JPanel {
             telaFuncionario.initialize();
         }
 
-    }//GEN-LAST:event_JBtryLoginActionPerformed
+    }
 
-    private void JBexitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBexitActionPerformed
-        // TODO add your handling code here:
+    private void JBexitActionPerformed(java.awt.event.ActionEvent evt) {
         System.exit(0);
-    }//GEN-LAST:event_JBexitActionPerformed
+    }
 
     public void initialize(){
         JFrame tela = new JFrame("App");

@@ -26,5 +26,4 @@ public class Logar {
             return new Funcionario("Erro", "Erro", 0, -1, -1);
         }
     }
-
 }

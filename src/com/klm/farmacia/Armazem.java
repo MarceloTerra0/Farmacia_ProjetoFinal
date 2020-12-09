@@ -8,22 +8,6 @@ import java.util.Scanner;
 import java.math.BigDecimal;
 
 public class Armazem {
-    public static String consultaPrecoEEstoque(String nomeProduto, int idFarmacia, Connection connection) throws SQLException {
-        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto FROM" +
-                " armazem JOIN produto WHERE produto.nome LIKE ? AND id_farmacia = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, nomeProduto);
-        statement.setInt(2, idFarmacia);
-        ResultSet produto = statement.executeQuery();
-        if(produto.next()){
-            System.out.println("Produto: '" + produto.getString("nome") +
-                    "'\nPreço: RS" + produto.getBigDecimal("preco") +
-                    "\nQuantidade no estoque: " + produto.getInt("qtd_produto"));
-        }else{
-            System.out.println("Produto inexistente");
-        }
-        return("");
-    }
 
     public static String compraEstoque(int idCargo, int idFarmacia, Connection connection) throws SQLException {
         if (idCargo != 1){

@@ -10,6 +10,7 @@ package com.klm.farmacia;
     import com.klm.farmacia.obj.Produto;
 
     //import java.awt.*;
+    import java.awt.*;
     import java.math.BigDecimal;
     import java.sql.*;
     import java.util.ArrayList;
@@ -335,10 +336,10 @@ public class Employee extends javax.swing.JPanel {
         JPemployee.setPreferredSize(new java.awt.Dimension(400, 302));
 
         JLwelcomeMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        JLwelcomeMessage.setText("Seja bem-vindo, @funcionario");
+        JLwelcomeMessage.setText("Seja bem-vindo(a), " + funcionario.getNomeFuncionario());
 
         JLpharmacyName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        JLpharmacyName.setText("@Farmácia");
+        JLpharmacyName.setText(funcionario.getNomeFarmacia());
 
         JLitemName.setText("Nome");
 
@@ -591,7 +592,7 @@ public class Employee extends javax.swing.JPanel {
         JTAcart.setRows(5);
         JSPcart.setViewportView(JTAcart);
 
-        JLpositionNumber.setText("Nº de posição do produto");
+        JLpositionNumber.setText("Id do produto a ser removido");
 
         JBremove.setText("Remover");
         JBremove.addActionListener(new java.awt.event.ActionListener() {
@@ -716,23 +717,19 @@ public class Employee extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-//Isso executa quando clicam no botão "Sair" em qualquer ponto da interface
-//Tudo certo por aqui (até onde eu sei)
-    private void JBlogoutActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_JBlogoutActionPerformed
-        // TODO add your handling code here:
-        connection.close();
-        //Loogin loogin = new Loogin(Connection connection);
-        //loogin.initialize(connection);
-        //JComponent comp = (JComponent) evt.getSource();
-        //Window win = SwingUtilities.getWindowAncestor(comp);
-        //win.dispose();
-    }//GEN-LAST:event_JBlogoutActionPerformed
+    //Isso executa quando clicam no botão "Sair" em qualquer ponto da interface
+    //Tudo certo por aqui (até onde eu sei)
+    private void JBlogoutActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {
+        Login login = new Login(connection);
+        login.initialize();
+        JComponent comp = (JComponent) evt.getSource();
+        Window win = SwingUtilities.getWindowAncestor(comp);
+        win.dispose();
+    }
 
-//Isso executa quando clicam fora da janela do nome em Busca
-    private void JTFitemNameFocusLost(java.awt.event.FocusEvent evt) throws SQLException {//GEN-FIRST:event_JTFitemNameFocusLost
-        // TODO add your handling code here:
+    //Isso executa quando clicam fora da janela do nome em Busca
+    private void JTFitemNameFocusLost(java.awt.event.FocusEvent evt) throws SQLException {
         itemName = JTFitemName.getText();
-        //System.out.println(itemName);
         produto = Armazem.checaProdutoPeloNome(itemName, funcionario.getIdFarmacia(), connection);
 
         if(produto.getQtdEstoque()!=-1){
@@ -744,11 +741,10 @@ public class Employee extends javax.swing.JPanel {
             produtoSelecionado = true;
         }
 
-    }//GEN-LAST:event_JTFitemNameFocusLost
+    }
 
     //Isso executa quando clicam fora da janela do código em Busca
-    private void JTFitemCodeFocusLost(java.awt.event.FocusEvent evt) throws SQLException {//GEN-FIRST:event_JTFitemCodeFocusLost
-        // TODO add your handling code here:
+    private void JTFitemCodeFocusLost(java.awt.event.FocusEvent evt) throws SQLException {
         itemCodeStr = JTFitemCode.getText();
         int itemCode = 0;
         try {
@@ -768,11 +764,10 @@ public class Employee extends javax.swing.JPanel {
             produtoSelecionado = true;
         }
 
-    }//GEN-LAST:event_JTFitemCodeFocusLost
+    }
 
     //Isso executa quando clicam em "Adicionar" em Busca
-    private void JBaddToCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBaddToCartActionPerformed
-        // TODO add your handling code here:
+    private void JBaddToCartActionPerformed(java.awt.event.ActionEvent evt) {
         String qtdProdutoStr = JTFitemQuantity.getText();
         System.out.println("qtdProdutoStr = " + qtdProdutoStr);
         try {
@@ -783,8 +778,9 @@ public class Employee extends javax.swing.JPanel {
                 if (produtoSelecionado) {
                     listaProdutosCarrinho.add(produto);
                     carrinho = carrinho +
+                            produto.getIdProduto() + ") " +
                             produto.getNomeProduto() + " " +
-                            qtdProduto + " " +
+                            qtdProduto + "x " +
                             "R$" + produto.getPrecoProduto().toString() + " " +
                             "R$" + produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)).toString() + "\n";
                     quantidadeProdutosCarrinho.add(qtdProduto);
@@ -809,66 +805,89 @@ public class Employee extends javax.swing.JPanel {
         }catch (NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Não é um número");
         }
-    }//GEN-LAST:event_JBaddToCartActionPerformed
+    }
 
     //Isso executa quando apertam o botão de "Cadastrar" em Cadastro
-    private void JBregisterActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_JBregisterActionPerformed
-        // TODO add your handling code here:
+    private void JBregisterActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {
         name = JTFclientName.getText();
         id = JTFclientID.getText();
         telefone = JTFcellphone.getText();
         JOptionPane.showMessageDialog(null, Cadastro.cadastrarCliente(name, telefone, id, connection));
-        //consegue passar pro banco de dados como um cliente novo só com isso?
-    }//GEN-LAST:event_JBregisterActionPerformed
+    }
 
-//Isso executa quando apertam o botão de "Pesquisar" em Histórico
-//**Atenção necessária aqui**
-    private void JBsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBsearchActionPerformed
-        // TODO add your handling code here:
-        id = JTFid.getText();               //o id, independente
-        if (JCBisEmployee.isSelected()){   //se for funcionario
-          
+    //Isso executa quando apertam o botão de "Pesquisar" em Histórico
+    //**Atenção necessária aqui**
+    private void JBsearchActionPerformed(java.awt.event.ActionEvent evt) {
+        id = JTFid.getText();
+        String escolha = "";
+        try {
+            int idFuncio = Integer.parseInt(id);
+            if (JCBisEmployee.isSelected()){
+                escolha = "funcionario";
+            }else{
+                escolha = "cliente";
+            }
+                JTAhistory.setText(Vendas.mostrarHistoricoVendasId(connection, 1, idFuncio, escolha));
+
+
+        }catch (NumberFormatException | SQLException e){
+            JOptionPane.showMessageDialog(null, "Não é um número");
+            e.printStackTrace();
         }
-        else{                               //se for cliente                               
-            
-        }
+
         id = ("");
         JTFid.setText("");
-    }//GEN-LAST:event_JBsearchActionPerformed
+    }
 
-//Essa classe é responsável só por mudar a interface
-//Quando o usuário selecionar a caixa de funcionário, a JLabel muda para ID funcionário
-//Ta certo (até onde eu sei)
-    private void JCBisEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCBisEmployeeActionPerformed
-        // TODO add your handling code here:
+    //Essa classe é responsável só por mudar a interface
+    //Quando o usuário selecionar a caixa de funcionário, a JLabel muda para ID funcionário
+    //Ta certo (até onde eu sei)
+    private void JCBisEmployeeActionPerformed(java.awt.event.ActionEvent evt) {
         if (JCBisEmployee.isSelected()){
             JLid.setText("ID Funcionário");
         }
         else{
             JLid.setText("ID Cliente");
         }
-    }//GEN-LAST:event_JCBisEmployeeActionPerformed
+    }
 
-    private void JBremoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBremoveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JBremoveActionPerformed
+    //Remover uma venda existente
+    private void JBremoveActionPerformed(java.awt.event.ActionEvent evt) {
+        System.out.println(JTFpositionNumber.getText());
+        try {
+            int idProdutoRemover = Integer.parseInt(JTFpositionNumber.getText());
+            //Considerando que não existam produtos com a ID = 0
+            if(idProdutoRemover >0){
+                for(int i = 0; i<listaProdutosCarrinho.size(); i++){
+                    if(listaProdutosCarrinho.get(i).getIdProduto() == idProdutoRemover);
+                    valorTotal = valorTotal.subtract(listaProdutosCarrinho.get(i).getPrecoProdutoMultiplicado(BigDecimal.valueOf(quantidadeProdutosCarrinho.get(i))));
+                    listaProdutosCarrinho.remove(i);
+                    quantidadeProdutosCarrinho.remove(i);
+                    carrinho = carrinhoAposRemocao.carrinhoAposRemocao(carrinho, i);
+                    JTAcart.setText(carrinho);
+                    break;
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Insira uma ID válida");
+            }
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Não é um número");
+        }
+        System.out.println("removeu");
+    }
 
     //Cria janela para finalizar venda
-    private void JBfinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBfinishActionPerformed
-        // TODO add your handling code here:
-        //criando a janela para a finalização da compra
+    private void JBfinishActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame jframe2 = new JFrame("App2");
         jframe2.setContentPane(new Employee(connection, funcionario, valorTotal
                 ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho).JPclient);
         jframe2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe2.pack();
         jframe2.setVisible(true);
-
-    }//GEN-LAST:event_JBfinishActionPerformed
+    }
 
     //Quando se insere o CPF na janela de finalização de compra
-    private void JTFclientIdFocusLost(java.awt.event.FocusEvent evt) throws SQLException {//GEN-FIRST:event_JTFclientIdFocusLost
-        // TODO add your handling code here:
+    private void JTFclientIdFocusLost(java.awt.event.FocusEvent evt) throws SQLException {
         JTFcurrentPrice.setText(valorTotalDescontado.toString());
         JTFtotalPrice.setText(valorTotal.toString());
         String cpf = JTFclientId.getText();
@@ -887,44 +906,35 @@ public class Employee extends javax.swing.JPanel {
         }else{
             JOptionPane.showMessageDialog(null, "Cadastre o cliente antes de prosseguir com a compra");
         }
-    }//GEN-LAST:event_JTFclientIdFocusLost
+    }
 
 
     //os 2 botoes back & forth-----------
-    private void JBback1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBback1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JBback1ActionPerformed
+    private void JBback1ActionPerformed(java.awt.event.ActionEvent evt) {}
 
-    private void JBforward1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBforward1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JBforward1ActionPerformed
+    private void JBforward1ActionPerformed(java.awt.event.ActionEvent evt) {}
     //Ajuda do kabal para fechar a janela
     //os 2 botoes back & forth-----------
 
 
-    private void JBcancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBcancelActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JBcancelActionPerformed
+    private void JBcancelActionPerformed(java.awt.event.ActionEvent evt) {}
     //Ajuda do kabal para fechar a janela
 
-    private void JBsellActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_JBsellActionPerformed
-        // TODO add your handling code here:
-        System.out.println("yep");
+    private void JBsellActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {
         Vendas.finalizarVenda(funcionario.getIdFuncionario(), cliente.getIdCliente(), funcionario.getIdFarmacia()
         , cliente.getQuantidadeCompras(), valorTotal, valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, connection);
-    }//GEN-LAST:event_JBsellActionPerformed
+    }
 
     public void initialize(){
         JFrame tela = new JFrame("App");
         tela.setContentPane(new Employee(connection, funcionario, valorTotal
                 ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho).JPemployee);
-        //window.dispose
         tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tela.pack();
         tela.setVisible(true);
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify
     private javax.swing.JButton JBaddToCart;
     private javax.swing.JButton JBback;
     private javax.swing.JButton JBback1;
@@ -991,5 +1001,5 @@ public class Employee extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private Connection connection;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration
 }

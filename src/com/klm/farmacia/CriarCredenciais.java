@@ -21,6 +21,7 @@ public class CriarCredenciais {
         }
         return(sb.toString());
     }
+
     public static String criarSenha() throws NoSuchAlgorithmException {
         boolean repetir = false;
         String senha, senhaConfirmada;
@@ -37,6 +38,7 @@ public class CriarCredenciais {
 
         return hashSenha(senha);
     }
+
     public static String criarUsername(Connection connection) throws SQLException {
         boolean repetir;
         Scanner scanner = new Scanner(System.in);

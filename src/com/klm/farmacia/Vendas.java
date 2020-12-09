@@ -12,6 +12,7 @@ import java.sql.*;
 import java.util.List;
 public class Vendas {
 
+    //Necessária a limpeza da função, porém a funcionalidade está ok
     public static String finalizarVenda(int idFuncionario, int idCliente, int idFarmacia, int comprasCliente
             , BigDecimal valorCompraTotal, BigDecimal valorCompraDesconto,
                                         List<Produto> listaProdutos, List<Integer> qtdProdutoVendido, Connection connection) throws SQLException {
@@ -83,27 +84,48 @@ public class Vendas {
             System.out.println("ERRO AO: update ++ qtd_compra cliente");
         }
 
+        //Comissão funcionario
+        String sql3 = "UPDATE funcionario SET comissao = ? WHERE id = ?";
         statement.close();
         statement1.close();
         return ("");
     }
 
-    public static String[] mostrarHistoricoVendas(Connection connection) throws SQLException {
-        String[] vendas = new String[10];
-        int contador = 0;
-        String SQLVendas = "SELECT * FROM historico_vendas ORDER BY id LIMIT 0, 10;";
+    public static String mostrarHistoricoVendasId(Connection connection, int pagina, int id, String escolha) throws SQLException {
+        String historicoVendasStr = "ID Venda - ID Farmacia - ID Funcionario - ID Cliente - Data - Valor Total - Valor Descontado\n";
+        String SQLVendas;
+        if(escolha.equals("funcionario")){
+            SQLVendas = "SELECT * FROM historico_vendas WHERE id_funcionario = ? ORDER BY id LIMIT ?, ?;";
+        }else{
+            SQLVendas = "SELECT * FROM historico_vendas WHERE id_cliente = ? ORDER BY id LIMIT ?, ?;";
+        }
+
         PreparedStatement SQLhistoricoVendas = connection.prepareStatement(SQLVendas);
+        SQLhistoricoVendas.setInt(1, id);
+        SQLhistoricoVendas.setInt(2, 10 * (pagina-1));
+        SQLhistoricoVendas.setInt(3, 10 * pagina);
         ResultSet historicoVendas = SQLhistoricoVendas.executeQuery();
         while(historicoVendas.next()){
-            java.sql.Date dbSqlDate = historicoVendas.getDate("data");
-            System.out.println(dbSqlDate);
-            System.out.println(historicoVendas.getInt("id"));
-            System.out.println(historicoVendas.getInt("id_farmacia"));
-            System.out.println(historicoVendas.getInt("id_funcionario"));
-            System.out.println(historicoVendas.getInt("id_cliente"));
-            String[] resultados;
+            int idVenda = historicoVendas.getInt("id");
+            int idFarmacia = historicoVendas.getInt("id_farmacia");
+            int idFuncionario = historicoVendas.getInt("id_funcionario");
+            int idCliente = historicoVendas.getInt("id_cliente");
+            java.sql.Date dbSqlDate = historicoVendas.getDate("dataVenda");
+            BigDecimal valorTotal = historicoVendas.getBigDecimal("valor_total");
+            BigDecimal valorDescontoAplicado = historicoVendas.getBigDecimal("valor_desconto_aplicado");
+
+
+            historicoVendasStr =
+                    historicoVendasStr
+                    + idVenda + ") "
+                    + idFarmacia + " "
+                    + idFuncionario + " "
+                    + idCliente + " "
+                    + dbSqlDate.toString() + " R$"
+                    + valorTotal.toString() + " R$"
+                    + valorDescontoAplicado.toString() + "\n";
         }
         historicoVendas.close();
-        return(vendas);
+        return(historicoVendasStr);
     }
 }

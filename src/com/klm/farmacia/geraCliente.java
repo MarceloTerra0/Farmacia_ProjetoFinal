@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class geraCliente {
+
     public static Cliente criaObjetoCliente(String cpf, Connection connection) throws SQLException {
         String sql = "SELECT * FROM cliente WHERE cpf = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -21,6 +22,7 @@ public class geraCliente {
             return(new Cliente(-1, -1, "", "", ""));
         }
     }
+    //retorna o valor já descontado
     public static BigDecimal calculaDesconto(Cliente cliente){
         if(cliente.getQuantidadeCompras() >= 20){
             return(new BigDecimal("0.90"));
