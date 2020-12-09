@@ -14,5 +14,5 @@ Funcionalidades da farmácia:
 Tela de login - Tela do funcionario
 ![](gifs/login.gif)
 
-Exemplo de compra
+Exemplo de compra (Do carrinho até a finalização)
 ![](gifs/compra.gif)
