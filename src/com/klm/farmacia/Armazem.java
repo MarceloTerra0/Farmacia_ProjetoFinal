@@ -55,13 +55,13 @@ public class Armazem {
     }
 
     public static String retiraItemArmazem(Produto produto, int quantidadeRemover, Connection connection) throws SQLException {
-        String sql = "UPDATE armazem SET qtd_produto = ? WHERE(id_farmacia = ?) AND (id_produto = ?)";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1, produto.getQtdEstoque() - quantidadeRemover);
-        statement.setInt(2, produto.getIdFarmacia());
-        statement.setInt(3, produto.getIdProduto());
-        int rows = statement.executeUpdate();
-        statement.close();
+        String retiraItemArmazemSQL = "UPDATE armazem SET qtd_produto = ? WHERE(id_farmacia = ?) AND (id_produto = ?)";
+        PreparedStatement retiraItemArmazemStatement = connection.prepareStatement(retiraItemArmazemSQL);
+        retiraItemArmazemStatement.setInt(1, produto.getQtdEstoque() - quantidadeRemover);
+        retiraItemArmazemStatement.setInt(2, produto.getIdFarmacia());
+        retiraItemArmazemStatement.setInt(3, produto.getIdProduto());
+        int rows = retiraItemArmazemStatement.executeUpdate();
+        retiraItemArmazemStatement.close();
         System.out.println("Itens removidos com sucesso - " + rows);
 
         return("Teste");
@@ -93,14 +93,15 @@ public class Armazem {
     }
 
     public static Produto checaProdutoPeloNome(String nomeProduto, int idFarmacia,  Connection connection) throws SQLException {
-        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto, produto.id" +
+        String checaProdutoPeloNomeSQL = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto, produto.id" +
                 " FROM farmacia.armazem" +
                 " INNER JOIN farmacia.produto ON armazem.id_produto = produto.id" +
                 " WHERE produto.nome LIKE ? AND id_farmacia = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, nomeProduto);
-        statement.setInt(2, idFarmacia);
-        ResultSet produto = statement.executeQuery();
+        PreparedStatement checaProdutoPeloNomeStatement = connection.prepareStatement(checaProdutoPeloNomeSQL);
+        checaProdutoPeloNomeStatement.setString(1, nomeProduto);
+        checaProdutoPeloNomeStatement.setInt(2, idFarmacia);
+        ResultSet produto = checaProdutoPeloNomeStatement.executeQuery();
+        checaProdutoPeloNomeStatement.close();
         if(produto.next()){
             return (new Produto(produto.getString("nome"), produto.getInt("id_farmacia"),
                     produto.getInt("qtd_produto"), produto.getBigDecimal("preco"), produto.getInt("id")));
@@ -111,14 +112,15 @@ public class Armazem {
     }
 
     public static Produto checaProdutoPeloID(int idProduto, int idFarmacia,  Connection connection) throws SQLException {
-        String sql = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto, produto.id" +
+        String checaProdutoPeloIdSQL = "SELECT armazem.id_farmacia, produto.nome, produto.preco, armazem.qtd_produto, produto.id" +
                 " FROM farmacia.armazem" +
                 " INNER JOIN farmacia.produto ON armazem.id_produto = produto.id" +
                 " WHERE produto.id = ? AND id_farmacia = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1, idProduto);
-        statement.setInt(2, idFarmacia);
-        ResultSet produto = statement.executeQuery();
+        PreparedStatement checaProdutoPeloIdStatement = connection.prepareStatement(checaProdutoPeloIdSQL);
+        checaProdutoPeloIdStatement.setInt(1, idProduto);
+        checaProdutoPeloIdStatement.setInt(2, idFarmacia);
+        ResultSet produto = checaProdutoPeloIdStatement.executeQuery();
+        checaProdutoPeloIdStatement.close();
         if(produto.next()){
             return (new Produto(produto.getString("nome"), produto.getInt("id_farmacia"),
                     produto.getInt("qtd_produto"), produto.getBigDecimal("preco"), produto.getInt("id")));

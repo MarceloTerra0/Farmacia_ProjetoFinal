@@ -1,33 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.klm.farmacia;
  
-    import com.klm.farmacia.obj.Cliente;
-    import com.klm.farmacia.obj.Funcionario;
-    import com.klm.farmacia.obj.Produto;
+import com.klm.farmacia.obj.Cliente;
+import com.klm.farmacia.obj.Funcionario;
+import com.klm.farmacia.obj.Produto;
 
-    //import java.awt.*;
-    import java.awt.*;
-    import java.math.BigDecimal;
-    import java.sql.*;
-    import java.util.ArrayList;
-    import java.util.List;
-    import javax.swing.*;
+import java.awt.*;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
 
 /**
  *
  * @author luc_p
  */
-public class Employee extends javax.swing.JPanel {
+public class TelaFuncionario extends javax.swing.JPanel {
     
     private String itemName,itemCodeStr,id,name, carrinho = "", telefone;
     private Funcionario funcionario;
     boolean produtoSelecionado;
     Produto produto;
     Cliente cliente;
+    JFrame jframe2;
 
     //String Carrinho
     BigDecimal valorTotal = new BigDecimal("0"), valorTotalDescontado = new BigDecimal("0");
@@ -38,7 +33,7 @@ public class Employee extends javax.swing.JPanel {
     /**
      * Creates new form Employee
      */
-    public Employee(Connection SQLconnection, Funcionario funcio, BigDecimal valorTota
+    public TelaFuncionario(Connection SQLconnection, Funcionario funcio, BigDecimal valorTota
             ,BigDecimal valorTotaDescontado, List<Produto> listaProdutosCarrinh, List<Integer> quantidadeProdutosCarrinh, String carrinh) {
         carrinho = carrinh;
         valorTotalDescontado = valorTotaDescontado;
@@ -720,8 +715,8 @@ public class Employee extends javax.swing.JPanel {
     //Isso executa quando clicam no botão "Sair" em qualquer ponto da interface
     //Tudo certo por aqui (até onde eu sei)
     private void JBlogoutActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {
-        Login login = new Login(connection);
-        login.initialize();
+        TelaLogin telaLogin = new TelaLogin(connection);
+        telaLogin.initialize();
         JComponent comp = (JComponent) evt.getSource();
         Window win = SwingUtilities.getWindowAncestor(comp);
         win.dispose();
@@ -773,7 +768,6 @@ public class Employee extends javax.swing.JPanel {
         try {
             int qtdProduto = Integer.parseInt(qtdProdutoStr);
             System.out.println("qtdProduto = " + qtdProduto);
-
             if (qtdProduto <= produto.getQtdEstoque() && qtdProduto>0) {
                 if (produtoSelecionado) {
                     listaProdutosCarrinho.add(produto);
@@ -829,7 +823,6 @@ public class Employee extends javax.swing.JPanel {
             }
                 JTAhistory.setText(Vendas.mostrarHistoricoVendasId(connection, 1, idFuncio, escolha));
 
-
         }catch (NumberFormatException | SQLException e){
             JOptionPane.showMessageDialog(null, "Não é um número");
             e.printStackTrace();
@@ -878,8 +871,8 @@ public class Employee extends javax.swing.JPanel {
 
     //Cria janela para finalizar venda
     private void JBfinishActionPerformed(java.awt.event.ActionEvent evt) {
-        JFrame jframe2 = new JFrame("App2");
-        jframe2.setContentPane(new Employee(connection, funcionario, valorTotal
+        jframe2 = new JFrame("App2");
+        jframe2.setContentPane(new TelaFuncionario(connection, funcionario, valorTotal
                 ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho).JPclient);
         jframe2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe2.pack();
@@ -917,17 +910,25 @@ public class Employee extends javax.swing.JPanel {
     //os 2 botoes back & forth-----------
 
 
-    private void JBcancelActionPerformed(java.awt.event.ActionEvent evt) {}
+    private void JBcancelActionPerformed(java.awt.event.ActionEvent evt) {
+        JComponent comp = (JComponent) evt.getSource();
+        Window win = SwingUtilities.getWindowAncestor(comp);
+        win.dispose();
+    }
     //Ajuda do kabal para fechar a janela
 
     private void JBsellActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {
-        Vendas.finalizarVenda(funcionario.getIdFuncionario(), cliente.getIdCliente(), funcionario.getIdFarmacia()
+        String mensagem = Vendas.finalizarVenda(funcionario.getIdFuncionario(), cliente.getIdCliente(), funcionario.getIdFarmacia()
         , cliente.getQuantidadeCompras(), valorTotal, valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, connection);
+        JComponent comp = (JComponent) evt.getSource();
+        Window win = SwingUtilities.getWindowAncestor(comp);
+        win.dispose();
+        JOptionPane.showMessageDialog(null, mensagem);
     }
 
     public void initialize(){
-        JFrame tela = new JFrame("App");
-        tela.setContentPane(new Employee(connection, funcionario, valorTotal
+        JFrame tela = new JFrame("Sistema da farmácia " + funcionario.getNomeFarmacia());
+        tela.setContentPane(new TelaFuncionario(connection, funcionario, valorTotal
                 ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho).JPemployee);
         tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tela.pack();

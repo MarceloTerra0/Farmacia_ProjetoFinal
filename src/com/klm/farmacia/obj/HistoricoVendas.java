@@ -10,7 +10,7 @@ public class HistoricoVendas {
     Timestamp dataVenda;
     BigDecimal valorTotal, valorDescontoAplicado;
 
-    //CÓDIGO QUEBRADO
+    //CÓDIGO QUEBRADO/NÃO TERMINADO
     public boolean refreshHistoricoVendas(ResultSet resultados) throws SQLException {
         if (resultados.next()) {
             return true;
@@ -19,7 +19,7 @@ public class HistoricoVendas {
             return false;
         }
     }
-    //CÓDIGO QUEBRADO
+    //CÓDIGO QUEBRADO/NÃO TERMINADO
     public HistoricoVendas(ResultSet resultados) throws SQLException {
         if (refreshHistoricoVendas(resultados)) {
             this.idVenda = resultados.getInt("id");

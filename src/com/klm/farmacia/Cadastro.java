@@ -53,17 +53,17 @@ public class Cadastro {
     }
 
     public static String cadastrarCliente(String nome,String telefone, String CPF, Connection connection) throws SQLException{
-        String sql = "INSERT INTO cliente (nome, telefone, quantidade_compras, cpf) VALUES (?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, nome);
-        statement.setString(2, telefone);
-        statement.setInt(3, 0);
-        statement.setString(4, CPF);
-        int rows = statement.executeUpdate();
-        statement.close();
+        String cadastrarClienteSQL = "INSERT INTO cliente (nome, telefone, quantidade_compras, cpf) VALUES (?, ?, ?, ?)";
+        PreparedStatement cadastrarClienteStatement = connection.prepareStatement(cadastrarClienteSQL);
+        cadastrarClienteStatement.setString(1, nome);
+        cadastrarClienteStatement.setString(2, telefone);
+        cadastrarClienteStatement.setInt(3, 0);
+        cadastrarClienteStatement.setString(4, CPF);
+        int rows = cadastrarClienteStatement.executeUpdate();
         if (rows>0){
             return("Cliente cadastrado com sucesso!");
         }
+        cadastrarClienteStatement.close();
         return ("Erro ao cadastrar o cliente");
     }
 }

@@ -37,7 +37,7 @@ public class Main{
             Connection connection = DriverManager.getConnection(SQLurl, SQLusername, SQLpassword);
             System.out.println("Connected to the database.");
 
-            Login telaLogin = new Login(connection);
+            TelaLogin telaLogin = new TelaLogin(connection);
             telaLogin.initialize();
 
             Scanner scanner = new Scanner(System.in);

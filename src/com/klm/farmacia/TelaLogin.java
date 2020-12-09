@@ -22,7 +22,7 @@ import java.util.List;
  * @author luc_p
  */
 
-public class Login extends javax.swing.JPanel {
+public class TelaLogin extends javax.swing.JPanel {
     
     private static String userLogin;
     private JButton JBexit;
@@ -39,7 +39,7 @@ public class Login extends javax.swing.JPanel {
     /**
      * Creates new form Login
      */
-    public Login(Connection connection1) {
+    public TelaLogin(Connection connection1) {
         connection = connection1;
         initComponents();
     }
@@ -174,12 +174,14 @@ public class Login extends javax.swing.JPanel {
             JComponent comp = (JComponent) evt.getSource();
             Window win = SwingUtilities.getWindowAncestor(comp);
             win.dispose();
+
             BigDecimal valorTotal = new BigDecimal("0"), valorTotalDescontado = new BigDecimal("0");
             List<Produto> listaProdutosCarrinho = new ArrayList<Produto>();
             List<Integer> quantidadeProdutosCarrinho = new ArrayList<Integer>();
             String carrinho = "";
-            Employee telaFuncionario = new Employee(connection, funcionario, valorTotal
+            TelaFuncionario telaFuncionario = new TelaFuncionario(connection, funcionario, valorTotal
                     ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho);
+
             telaFuncionario.initialize();
         }
 
@@ -190,8 +192,8 @@ public class Login extends javax.swing.JPanel {
     }
 
     public void initialize(){
-        JFrame tela = new JFrame("App");
-        tela.setContentPane(new Login(connection).JPlogin);
+        JFrame tela = new JFrame("Tela de login");
+        tela.setContentPane(new TelaLogin(connection).JPlogin);
         //window.dispose
         tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tela.pack();

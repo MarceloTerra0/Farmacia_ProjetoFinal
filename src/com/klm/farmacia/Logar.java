@@ -10,13 +10,13 @@ import java.sql.SQLException;
 
 public class Logar {
     public static Funcionario login(String username, String senha, Connection connection) throws SQLException, NoSuchAlgorithmException {
-        String sql = "SELECT funcionario.login, funcionario.senha, funcionario.nome, farmacias.nome_farmacia," +
+        String gerarFuncionarioSQL = "SELECT funcionario.login, funcionario.senha, funcionario.nome, farmacias.nome_farmacia," +
                 " funcionario.id_farmacia, funcionario.cargo, funcionario.id FROM farmacia.funcionario INNER JOIN farmacia.farmacias" +
                 " ON funcionario.id_farmacia=farmacias.id_farmacia WHERE funcionario.login = ? AND funcionario.senha = ?;";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, username);
-        statement.setString(2, CriarCredenciais.hashSenha(senha));
-        ResultSet logado = statement.executeQuery();
+        PreparedStatement gerarFuncionarioSQLStatement = connection.prepareStatement(gerarFuncionarioSQL);
+        gerarFuncionarioSQLStatement.setString(1, username);
+        gerarFuncionarioSQLStatement.setString(2, CriarCredenciais.hashSenha(senha));
+        ResultSet logado = gerarFuncionarioSQLStatement.executeQuery();
 
         if (logado.next()){
             //Criar nova query pra pegar nome da farmacia de onde ele trabalha
