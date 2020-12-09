@@ -70,24 +70,16 @@ public class Armazem {
         }
     }
 
-    public static String retiraItemArmazem(int idFarmacia
-            ,int idProduto, int quantidadeRemover, Connection connection) throws SQLException {
-        String sql = "SELECT qtd_produto FROM armazem WHERE id_farmacia = ? AND id_produto = ?";
+    public static String retiraItemArmazem(Produto produto, int quantidadeRemover, Connection connection) throws SQLException {
+        String sql = "UPDATE armazem SET qtd_produto = ? WHERE(id_farmacia = ?) AND (id_produto = ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1, idFarmacia);
-        statement.setInt(2, idProduto);
-        ResultSet produtoEstoque = statement.executeQuery();
-        if(produtoEstoque.next()){
-            int qtdProdutos = produtoEstoque.getInt("qtd_produto");
-            if (quantidadeRemover > qtdProdutos){
-                statement.close();
-                return("Requerindo mais produtos do que existem no estoque");
-            }else{
-                statement.close();
-                return("Itens removidos com sucesso");
-            }
-        }
+        statement.setInt(1, produto.getQtdEstoque() - quantidadeRemover);
+        statement.setInt(2, produto.getIdFarmacia());
+        statement.setInt(3, produto.getIdProduto());
+        int rows = statement.executeUpdate();
         statement.close();
+        System.out.println("Itens removidos com sucesso - " + rows);
+
         return("Teste");
     }
 

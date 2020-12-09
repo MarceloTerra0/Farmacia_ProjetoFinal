@@ -44,6 +44,8 @@ public class Vendas {
             statement.setInt(i*3+1, idVenda);
             statement.setInt(i*3+2, listaProdutos.get(i).getIdProduto());
             statement.setInt(i*3+3, qtdProdutoVendido.get(i));
+
+            Armazem.retiraItemArmazem(listaProdutos.get(i), qtdProdutoVendido.get(i), connection);
         }
         int rows = statement.executeUpdate();
 
