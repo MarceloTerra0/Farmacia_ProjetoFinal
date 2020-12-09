@@ -1,5 +1,3 @@
-//Adicionar dinheiro na farmacia
-
 package com.klm.farmacia;
 
 import com.klm.farmacia.obj.Produto;
@@ -37,7 +35,6 @@ public class Vendas {
                 vendaProduto = vendaProduto.concat("(?, ?, ?),");
             }
         }
-        System.out.println(vendaProduto + " String be like " + listaProdutos.size());
         PreparedStatement vendaProdutoStatement = connection.prepareStatement(vendaProduto);
         for(int i=0; i < listaProdutos.size(); i++) {
             vendaProdutoStatement.setInt(i*3+1, idVenda);
@@ -48,11 +45,8 @@ public class Vendas {
         }
         int rows1 = vendaProdutoStatement.executeUpdate();
 
-        if (rows1>0){
-            System.out.println("Compra realizada com sucesso");
-        }else{
-            System.out.println("Erro ao finalizar a venda");
-        }
+        if (rows1>0){}
+
         vendaProdutoStatement.close();
         //Trecho cuidando da insercao de produtos na tabela de vendas - FINAL
 
@@ -73,20 +67,14 @@ public class Vendas {
         historicoVendasStatement.setBigDecimal(6, valorCompraTotal);
         historicoVendasStatement.setBigDecimal(7, valorCompraDesconto);
         int rows2 = historicoVendasStatement.executeUpdate();
-        if (rows2>0){
-            System.out.println("foi");
-        }
+        if (rows2>0){}
 
         String atualizarComprasClienteSQL = "UPDATE cliente SET quantidade_compras = ? WHERE id = ?";
         PreparedStatement atualizarComprasClienteStatement = connection.prepareStatement(atualizarComprasClienteSQL);
         atualizarComprasClienteStatement.setInt(1, comprasCliente+1);
         atualizarComprasClienteStatement.setInt(2, idCliente);
         int rows3 = atualizarComprasClienteStatement.executeUpdate();
-        if (rows3>0){
-            System.out.println("update ++ qtd_compra cliente");
-        }else{
-            System.out.println("ERRO AO: update ++ qtd_compra cliente");
-        }
+        if (rows3>0){}
         historicoVendasStatement.close();
         atualizarComprasClienteStatement.close();
         //Trecho cuidando da tabela historico_vendas - FINAL
@@ -101,18 +89,13 @@ public class Vendas {
             comissao = acaharComissaoFuncionarioRS.getBigDecimal("comissao");
         }else{
             comissao = new BigDecimal("0");
-            System.out.println("erro ao checar comissao (como ?) ");
         }
         String atualizarComissaoFuncionarioSQL = "UPDATE funcionario SET comissao = ? WHERE id = ?";
         PreparedStatement atualizarComissaoFuncionarioStatement = connection.prepareStatement(atualizarComissaoFuncionarioSQL);
         atualizarComissaoFuncionarioStatement.setBigDecimal(1, comissao.add(valorCompraTotal.multiply(new BigDecimal("0.01"))));
         atualizarComissaoFuncionarioStatement.setInt(2, idFuncionario);
         int rows4 = atualizarComissaoFuncionarioStatement.executeUpdate();
-        if (rows4>0){
-            System.out.println("sucesso ao adicionar comissao");
-        }else{
-            System.out.println("falha ao adicionar comissao");
-        }
+        if (rows4>0){}
         acaharComissaoFuncionarioStatement.close();
         atualizarComissaoFuncionarioStatement.close();
         //Trecho cuidando da comissao do(a) funcionario(a) - FINAL
@@ -129,16 +112,12 @@ public class Vendas {
             dinheiroFarmacia = new BigDecimal("0");
         }
 
-        String atualizarDinheiroFarmaciaSQL = "UPDATE farmacias SET dinheiro = ? WHERE id = ?";
+        String atualizarDinheiroFarmaciaSQL = "UPDATE farmacias SET dinheiro = ? WHERE id_farmacia = ?";
         PreparedStatement atualizarDinheiroFarmaciaStatement = connection.prepareStatement(atualizarDinheiroFarmaciaSQL);
         atualizarDinheiroFarmaciaStatement.setBigDecimal(1, dinheiroFarmacia.add(valorCompraDesconto));
         atualizarDinheiroFarmaciaStatement.setInt(2, idFarmacia);
         int rows5 = atualizarDinheiroFarmaciaStatement.executeUpdate();
-        if (rows5>0){
-            System.out.println("sucesso ++ dinheiro farmacia");
-        }else{
-            System.out.println("deu ruim ++ dinheiro farmacia");
-        }
+        if (rows5>0){}
         acharDinheiroFarmaciaStatement.close();
         atualizarDinheiroFarmaciaStatement.close();
         //Adicionar valorCompraDescontado ao dinheiro da farmácia - FINAL

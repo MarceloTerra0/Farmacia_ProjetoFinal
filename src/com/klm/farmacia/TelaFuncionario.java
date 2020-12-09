@@ -713,7 +713,6 @@ public class TelaFuncionario extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     //Isso executa quando clicam no botão "Sair" em qualquer ponto da interface
-    //Tudo certo por aqui (até onde eu sei)
     private void JBlogoutActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {
         TelaLogin telaLogin = new TelaLogin(connection);
         telaLogin.initialize();
@@ -764,10 +763,8 @@ public class TelaFuncionario extends javax.swing.JPanel {
     //Isso executa quando clicam em "Adicionar" em Busca
     private void JBaddToCartActionPerformed(java.awt.event.ActionEvent evt) {
         String qtdProdutoStr = JTFitemQuantity.getText();
-        System.out.println("qtdProdutoStr = " + qtdProdutoStr);
         try {
             int qtdProduto = Integer.parseInt(qtdProdutoStr);
-            System.out.println("qtdProduto = " + qtdProduto);
             if (qtdProduto <= produto.getQtdEstoque() && qtdProduto>0) {
                 if (produtoSelecionado) {
                     listaProdutosCarrinho.add(produto);
@@ -777,12 +774,10 @@ public class TelaFuncionario extends javax.swing.JPanel {
                             qtdProduto + "x " +
                             "R$" + produto.getPrecoProduto().toString() + " " +
                             "R$" + produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)).toString() + "\n";
-                    quantidadeProdutosCarrinho.add(qtdProduto);
-                    System.out.println(carrinho);
-                    System.out.println("antes " + valorTotal.toString());
 
+                    quantidadeProdutosCarrinho.add(qtdProduto);
                     valorTotal = valorTotal.add(produto.getPrecoProdutoMultiplicado(BigDecimal.valueOf(qtdProduto)));
-                    System.out.println("depois " + valorTotal.toString());
+
                     JTAcart.setText(carrinho);
                     JTFstock.setText("");
                     JTFitemName.setText("");
@@ -810,7 +805,6 @@ public class TelaFuncionario extends javax.swing.JPanel {
     }
 
     //Isso executa quando apertam o botão de "Pesquisar" em Histórico
-    //**Atenção necessária aqui**
     private void JBsearchActionPerformed(java.awt.event.ActionEvent evt) {
         id = JTFid.getText();
         String escolha = "";
@@ -834,7 +828,6 @@ public class TelaFuncionario extends javax.swing.JPanel {
 
     //Essa classe é responsável só por mudar a interface
     //Quando o usuário selecionar a caixa de funcionário, a JLabel muda para ID funcionário
-    //Ta certo (até onde eu sei)
     private void JCBisEmployeeActionPerformed(java.awt.event.ActionEvent evt) {
         if (JCBisEmployee.isSelected()){
             JLid.setText("ID Funcionário");
@@ -846,7 +839,6 @@ public class TelaFuncionario extends javax.swing.JPanel {
 
     //Remover uma venda existente
     private void JBremoveActionPerformed(java.awt.event.ActionEvent evt) {
-        System.out.println(JTFpositionNumber.getText());
         try {
             int idProdutoRemover = Integer.parseInt(JTFpositionNumber.getText());
             //Considerando que não existam produtos com a ID = 0
@@ -856,7 +848,7 @@ public class TelaFuncionario extends javax.swing.JPanel {
                     valorTotal = valorTotal.subtract(listaProdutosCarrinho.get(i).getPrecoProdutoMultiplicado(BigDecimal.valueOf(quantidadeProdutosCarrinho.get(i))));
                     listaProdutosCarrinho.remove(i);
                     quantidadeProdutosCarrinho.remove(i);
-                    carrinho = carrinhoAposRemocao.carrinhoAposRemocao(carrinho, i);
+                    carrinho = CarrinhoAposRemocao.carrinhoAposRemocao(carrinho, i);
                     JTAcart.setText(carrinho);
                     break;
                 }
@@ -866,12 +858,11 @@ public class TelaFuncionario extends javax.swing.JPanel {
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Não é um número");
         }
-        System.out.println("removeu");
     }
 
     //Cria janela para finalizar venda
     private void JBfinishActionPerformed(java.awt.event.ActionEvent evt) {
-        jframe2 = new JFrame("App2");
+        jframe2 = new JFrame("Tela de fechamento de venda");
         jframe2.setContentPane(new TelaFuncionario(connection, funcionario, valorTotal
                 ,valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, carrinho).JPclient);
         jframe2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -879,12 +870,12 @@ public class TelaFuncionario extends javax.swing.JPanel {
         jframe2.setVisible(true);
     }
 
-    //Quando se insere o CPF na janela de finalização de compra
+    //Quando se insere o CPF na janela de finalização de compra E a caixa perde o foco
     private void JTFclientIdFocusLost(java.awt.event.FocusEvent evt) throws SQLException {
         JTFcurrentPrice.setText(valorTotalDescontado.toString());
         JTFtotalPrice.setText(valorTotal.toString());
         String cpf = JTFclientId.getText();
-        cliente = geraCliente.criaObjetoCliente(cpf, connection);
+        cliente = GeraCliente.criaObjetoCliente(cpf, connection);
         if(cliente.getIdCliente()!=-1){
             JTFcellphone1.setText(cliente.getTelefoneCliente());
             JTFclientName1.setText(cliente.getNomeCliente());
@@ -893,30 +884,25 @@ public class TelaFuncionario extends javax.swing.JPanel {
             //Essa parte abaixo idealmente já estaria inserida no momento da criação da janela
             //Porém ainda não está. Resolver.
             JTFtotalPrice.setText(valorTotal.toString());
-            JTFcurrentPrice.setText(valorTotal.multiply(geraCliente.calculaDesconto(cliente)).setScale(2, BigDecimal.ROUND_UP).toString());
-            valorTotalDescontado = valorTotal.multiply(geraCliente.calculaDesconto(cliente)).setScale(2, BigDecimal.ROUND_UP);
+            JTFcurrentPrice.setText(valorTotal.multiply(GeraCliente.calculaDesconto(cliente)).setScale(2, BigDecimal.ROUND_UP).toString());
+            valorTotalDescontado = valorTotal.multiply(GeraCliente.calculaDesconto(cliente)).setScale(2, BigDecimal.ROUND_UP);
             JTAcart1.setText(carrinho);
         }else{
             JOptionPane.showMessageDialog(null, "Cadastre o cliente antes de prosseguir com a compra");
         }
     }
 
-
-    //os 2 botoes back & forth-----------
+    //Os 2 botões (esquerda e direita) da tela de finalização de pedido-----------
     private void JBback1ActionPerformed(java.awt.event.ActionEvent evt) {}
-
     private void JBforward1ActionPerformed(java.awt.event.ActionEvent evt) {}
-    //Ajuda do kabal para fechar a janela
-    //os 2 botoes back & forth-----------
 
-
+    //Cancelar durante a tela de finalização de pedido
     private void JBcancelActionPerformed(java.awt.event.ActionEvent evt) {
         JComponent comp = (JComponent) evt.getSource();
         Window win = SwingUtilities.getWindowAncestor(comp);
         win.dispose();
     }
-    //Ajuda do kabal para fechar a janela
-
+    //Vender durante a tela de finalização de pedido
     private void JBsellActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {
         String mensagem = Vendas.finalizarVenda(funcionario.getIdFuncionario(), cliente.getIdCliente(), funcionario.getIdFarmacia()
         , cliente.getQuantidadeCompras(), valorTotal, valorTotalDescontado, listaProdutosCarrinho, quantidadeProdutosCarrinho, connection);

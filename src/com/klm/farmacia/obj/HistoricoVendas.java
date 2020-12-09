@@ -1,16 +1,17 @@
-//Esperar o front-end para implementar
 package com.klm.farmacia.obj;
 
 import java.math.BigDecimal;
 import java.sql.*;
 
+//Classe não utilizada no projeto final. E por estar descontinuada,
+//sua implementação provavelmente necessitaria de mudanças. (Também possui código para inserção de dados sem a UI)
 public class HistoricoVendas {
 
     int idVenda, idFarmacia, idFuncionario, idCliente;
     Timestamp dataVenda;
     BigDecimal valorTotal, valorDescontoAplicado;
 
-    //CÓDIGO QUEBRADO/NÃO TERMINADO
+    //Código descontinuado
     public boolean refreshHistoricoVendas(ResultSet resultados) throws SQLException {
         if (resultados.next()) {
             return true;
@@ -19,7 +20,8 @@ public class HistoricoVendas {
             return false;
         }
     }
-    //CÓDIGO QUEBRADO/NÃO TERMINADO
+
+    //Código descontinuado
     public HistoricoVendas(ResultSet resultados) throws SQLException {
         if (refreshHistoricoVendas(resultados)) {
             this.idVenda = resultados.getInt("id");
@@ -31,6 +33,7 @@ public class HistoricoVendas {
             this.valorDescontoAplicado = resultados.getBigDecimal("valor_desconto_aplicado");
         }
     }
+
     public int getIdVenda(){
         return idVenda;
     }

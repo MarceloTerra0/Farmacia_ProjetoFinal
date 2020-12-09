@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.klm.farmacia;
     
 import com.klm.farmacia.obj.Funcionario;
@@ -166,7 +161,6 @@ public class TelaLogin extends javax.swing.JPanel {
         if (funcionario.getIdCargo() == -1){
             JOptionPane.showMessageDialog(null, "Usuário ou senha incorretos!");
         }else{
-            System.out.println(funcionario.getNomeFuncionario());
             userLogin = ("");
             passwordLogin = ("");
             JTFusername.setText("");

@@ -22,6 +22,8 @@ public class CriarCredenciais {
         return(sb.toString());
     }
 
+    //Função não utilizada no projeto final. E por estar descontinuada,
+    //sua implementação provavelmente necessitaria de mudanças. (Também possui código para inserção de dados sem a UI)
     public static String criarSenha() throws NoSuchAlgorithmException {
         boolean repetir = false;
         String senha, senhaConfirmada;
@@ -39,6 +41,8 @@ public class CriarCredenciais {
         return hashSenha(senha);
     }
 
+    //Função não utilizada no projeto final. E por estar descontinuada,
+    //sua implementação provavelmente necessitaria de mudanças. (Também possui código para inserção de dados sem a UI)
     public static String criarUsername(Connection connection) throws SQLException {
         boolean repetir;
         Scanner scanner = new Scanner(System.in);

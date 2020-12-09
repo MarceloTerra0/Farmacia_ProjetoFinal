@@ -8,7 +8,8 @@ import java.util.Scanner;
 import java.math.BigDecimal;
 
 public class Armazem {
-
+    //Função não utilizada no projeto final. E por estar descontinuada,
+    //sua implementação provavelmente necessitaria de mudanças. (Também possui código para inserção de dados sem a UI)
     public static String compraEstoque(int idCargo, int idFarmacia, Connection connection) throws SQLException {
         if (idCargo != 1){
             String mensagem;
@@ -54,7 +55,7 @@ public class Armazem {
         }
     }
 
-    public static String retiraItemArmazem(Produto produto, int quantidadeRemover, Connection connection) throws SQLException {
+    public static void retiraItemArmazem(Produto produto, int quantidadeRemover, Connection connection) throws SQLException {
         String retiraItemArmazemSQL = "UPDATE armazem SET qtd_produto = ? WHERE(id_farmacia = ?) AND (id_produto = ?)";
         PreparedStatement retiraItemArmazemStatement = connection.prepareStatement(retiraItemArmazemSQL);
         retiraItemArmazemStatement.setInt(1, produto.getQtdEstoque() - quantidadeRemover);
@@ -62,11 +63,10 @@ public class Armazem {
         retiraItemArmazemStatement.setInt(3, produto.getIdProduto());
         int rows = retiraItemArmazemStatement.executeUpdate();
         retiraItemArmazemStatement.close();
-        System.out.println("Itens removidos com sucesso - " + rows);
-
-        return("Teste");
     }
 
+    //Função não utilizada no projeto final. E por estar descontinuada,
+    //sua implementação provavelmente necessitaria de mudanças. (Também possui código para inserção de dados sem a UI)
     public static String cadastrarNovoProduto(int idCargo, Connection connection) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Digite o nome do produto");
@@ -101,7 +101,6 @@ public class Armazem {
         checaProdutoPeloNomeStatement.setString(1, nomeProduto);
         checaProdutoPeloNomeStatement.setInt(2, idFarmacia);
         ResultSet produto = checaProdutoPeloNomeStatement.executeQuery();
-        checaProdutoPeloNomeStatement.close();
         if(produto.next()){
             return (new Produto(produto.getString("nome"), produto.getInt("id_farmacia"),
                     produto.getInt("qtd_produto"), produto.getBigDecimal("preco"), produto.getInt("id")));
@@ -120,7 +119,7 @@ public class Armazem {
         checaProdutoPeloIdStatement.setInt(1, idProduto);
         checaProdutoPeloIdStatement.setInt(2, idFarmacia);
         ResultSet produto = checaProdutoPeloIdStatement.executeQuery();
-        checaProdutoPeloIdStatement.close();
+
         if(produto.next()){
             return (new Produto(produto.getString("nome"), produto.getInt("id_farmacia"),
                     produto.getInt("qtd_produto"), produto.getBigDecimal("preco"), produto.getInt("id")));

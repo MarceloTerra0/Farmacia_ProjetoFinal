@@ -26,7 +26,7 @@ CREATE TABLE `armazem` (
   `id_farmacia` int NOT NULL,
   `id_produto` int NOT NULL,
   `qtd_produto` int NOT NULL,
-  PRIMARY KEY (`id_farmacia`)
+  PRIMARY KEY (`id_farmacia`,`id_produto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -36,7 +36,7 @@ CREATE TABLE `armazem` (
 
 LOCK TABLES `armazem` WRITE;
 /*!40000 ALTER TABLE `armazem` DISABLE KEYS */;
-INSERT INTO `armazem` VALUES (1,1,10);
+INSERT INTO `armazem` VALUES (1,1,28),(1,2,40),(1,3,98),(1,4,20),(1,5,90),(2,1,12),(2,2,76),(2,3,45),(2,4,13),(2,5,39);
 /*!40000 ALTER TABLE `armazem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,7 +51,7 @@ CREATE TABLE `cargos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,6 +60,7 @@ CREATE TABLE `cargos` (
 
 LOCK TABLES `cargos` WRITE;
 /*!40000 ALTER TABLE `cargos` DISABLE KEYS */;
+INSERT INTO `cargos` VALUES (1,'Funcionário'),(2,'Gerente'),(3,'Chefe');
 /*!40000 ALTER TABLE `cargos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -76,8 +77,8 @@ CREATE TABLE `cliente` (
   `quantidade_compras` int NOT NULL,
   `telefone` varchar(20) NOT NULL,
   `cpf` varchar(15) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`,`cpf`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +87,7 @@ CREATE TABLE `cliente` (
 
 LOCK TABLES `cliente` WRITE;
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-INSERT INTO `cliente` VALUES (1,'Marcelo',20,'65 91234-5678','123.456.789-00');
+INSERT INTO `cliente` VALUES (1,'Marcelo original',24,'(65) 94269-6969','123.456.789-00'),(2,'Marcelo2',5,'(65) 96969-6262','123.456.789-12'),(3,'marcelo3',0,'(65) 96363-6969','666.555.444-33'),(4,'marcelo marcelo?',0,'(65) 96969-6969','789.456.123-78'),(5,'Marcelo213',0,'(65) 96229-6969','123.321.123-32'),(6,'Marcelinho creu',1,'(65) 96969-6969','456.789.123-45'),(7,'Marcelo malvado',2,'(65) 96666-6666','666.666.666-66');
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,9 +99,10 @@ DROP TABLE IF EXISTS `farmacias`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `farmacias` (
-  `id` int NOT NULL,
+  `id_farmacia` int NOT NULL,
   `dinheiro` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id`)
+  `nome_farmacia` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_farmacia`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -110,7 +112,7 @@ CREATE TABLE `farmacias` (
 
 LOCK TABLES `farmacias` WRITE;
 /*!40000 ALTER TABLE `farmacias` DISABLE KEYS */;
-INSERT INTO `farmacias` VALUES (1,10000.00);
+INSERT INTO `farmacias` VALUES (1,12357.67,'Filial 1'),(2,5000.00,'Filial 2');
 /*!40000 ALTER TABLE `farmacias` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -140,7 +142,7 @@ CREATE TABLE `funcionario` (
 
 LOCK TABLES `funcionario` WRITE;
 /*!40000 ALTER TABLE `funcionario` DISABLE KEYS */;
-INSERT INTO `funcionario` VALUES (1,'testando',800.00,'teste','b123e9e19d217169b981a61188920f9d28638709a5132201684d792b9264271b7f09157ed4321b1c097f7a4abecfc0977d40a7ee599c845883bd1074ca23c4af',1,0.00,0),(2,'Marcelo',100.00,'teste1','e7932f1b609431aae3e96e6ab99d9ebe383ad19b6e866d434ab12193d1c85b3206d8ec79fb490a1887028c18371d5040f59c854d0a326bc9d230bb950e190c16',1,0.00,1);
+INSERT INTO `funcionario` VALUES (1,'testando',800.00,'teste','b123e9e19d217169b981a61188920f9d28638709a5132201684d792b9264271b7f09157ed4321b1c097f7a4abecfc0977d40a7ee599c845883bd1074ca23c4af',1,0.00,0),(2,'Marcelo',100.00,'teste1','e7932f1b609431aae3e96e6ab99d9ebe383ad19b6e866d434ab12193d1c85b3206d8ec79fb490a1887028c18371d5040f59c854d0a326bc9d230bb950e190c16',1,0.79,1);
 /*!40000 ALTER TABLE `funcionario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -156,11 +158,11 @@ CREATE TABLE `historico_vendas` (
   `id_farmacia` int NOT NULL,
   `id_funcionario` int NOT NULL,
   `id_cliente` int NOT NULL,
-  `data` varchar(20) NOT NULL,
+  `dataVenda` datetime NOT NULL,
   `valor_total` decimal(7,2) NOT NULL,
   `valor_desconto_aplicado` decimal(7,2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,7 +171,7 @@ CREATE TABLE `historico_vendas` (
 
 LOCK TABLES `historico_vendas` WRITE;
 /*!40000 ALTER TABLE `historico_vendas` DISABLE KEYS */;
-INSERT INTO `historico_vendas` VALUES (1,2,5,856,'03/12/2020 02:48:01',800.00,700.00),(4,1,1,1,'03/12/2020 03:18:15',827.99,827.99),(5,1,1,1,'03/12/2020 03:18:45',827.99,827.99),(6,1,1,1,'03/12/2020 03:25:17',827.99,827.99),(7,1,1,1,'03/12/2020 03:26:05',827.99,827.99),(8,1,1,1,'03/12/2020 03:30:00',827.99,786.59),(9,1,1,1,'03/12/2020 03:30:28',827.99,745.19),(10,1,1,1,'03/12/2020 20:18:40',827.99,745.19);
+INSERT INTO `historico_vendas` VALUES (5,1,1,1,'2020-12-06 02:02:03',827.99,745.19),(6,1,1,1,'2020-12-06 12:36:29',827.99,745.19),(7,1,1,1,'2020-12-06 12:38:21',827.99,745.19),(8,1,1,1,'2020-12-06 12:39:42',800.00,720.00),(9,1,2,2,'2020-12-09 03:20:53',9.00,0.00),(10,1,2,1,'2020-12-09 03:24:40',45.00,40.50),(11,1,2,2,'2020-12-09 04:29:02',9.00,9.00),(12,1,2,2,'2020-12-09 08:00:14',3.00,3.00),(13,1,2,1,'2020-12-09 11:05:39',3.00,2.70),(14,1,2,6,'2020-12-09 17:16:23',53.00,53.00),(15,1,2,2,'2020-12-09 17:23:53',3.00,3.00),(16,1,2,2,'2020-12-09 17:25:45',3.00,3.00),(17,1,2,7,'2020-12-09 18:39:11',5.00,5.00),(18,1,2,7,'2020-12-09 18:41:55',12.00,12.00);
 /*!40000 ALTER TABLE `historico_vendas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -195,7 +197,7 @@ CREATE TABLE `produto` (
 
 LOCK TABLES `produto` WRITE;
 /*!40000 ALTER TABLE `produto` DISABLE KEYS */;
-INSERT INTO `produto` VALUES (1,'Buscopan',7.50,6.20);
+INSERT INTO `produto` VALUES (1,'Buscopan',3.00,2.50),(2,'Dipirona',5.00,4.00),(3,'Dorflex',6.00,4.50),(4,'Neosaldina',7.00,5.50),(5,'Torsilax',8.00,6.50);
 /*!40000 ALTER TABLE `produto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -219,7 +221,7 @@ CREATE TABLE `venda` (
 
 LOCK TABLES `venda` WRITE;
 /*!40000 ALTER TABLE `venda` DISABLE KEYS */;
-INSERT INTO `venda` VALUES (5,1,5),(5,2,8),(5,1,5),(5,2,8),(6,1,5),(6,2,8),(7,1,5),(7,2,8),(8,1,5),(8,2,8),(9,1,5),(9,2,8),(9,1,5),(9,2,8),(10,1,5),(10,2,8);
+INSERT INTO `venda` VALUES (5,1,5),(5,2,8),(6,1,5),(6,2,8),(7,1,5),(7,2,8),(8,1,5),(8,2,8),(9,1,3),(10,1,5),(10,2,6),(11,1,3),(12,1,1),(13,1,1),(14,2,10),(14,1,1),(15,1,1),(16,1,1),(17,2,1),(18,1,4);
 /*!40000 ALTER TABLE `venda` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -232,4 +234,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-05 14:55:00
+-- Dump completed on 2020-12-09 19:01:27

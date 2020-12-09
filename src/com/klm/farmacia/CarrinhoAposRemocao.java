@@ -1,6 +1,6 @@
 package com.klm.farmacia;
 
-public class carrinhoAposRemocao {
+public class CarrinhoAposRemocao {
     public static String carrinhoAposRemocao(String carrinho, int posicaoRemocao){
         String carrinhoAtualizado = "";
         String[] itens = carrinho.split("\n");

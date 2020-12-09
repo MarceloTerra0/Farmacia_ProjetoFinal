@@ -6,6 +6,8 @@ import java.util.Scanner;
 import java.math.BigDecimal;
 
 public class Cadastro {
+    //Função não utilizada no projeto final. E por estar descontinuada,
+    //sua implementação provavelmente necessitaria de mudanças. (Também possui código para inserção de dados sem a UI)
     public static String cadastrarFuncionario(int idCargo, Connection connection) throws SQLException, NoSuchAlgorithmException {
         //Cargo 3 = Chefe, 2 = Gerente, 1 = Vendedor
         Scanner scanner = new Scanner(System.in);

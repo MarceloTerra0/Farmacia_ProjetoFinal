@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class geraCliente {
+public class GeraCliente {
 
     public static Cliente criaObjetoCliente(String cpf, Connection connection) throws SQLException {
         String sql = "SELECT * FROM cliente WHERE cpf = ?";
